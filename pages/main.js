@@ -33,6 +33,9 @@ if (loginForm) {
                 }
             })
             .catch(error => {
+                const errorMessage = document.getElementById('error-message');
+                errorMessage.textContent = 'Incorrect email or password. Please try again.';
+                errorMessage.classList.remove('d-none');
                 console.error('Error logging in:', error);
             });
     });
