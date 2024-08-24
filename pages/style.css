@@ -1,14 +1,44 @@
-body{
-    background: url('../images/classbg.jpg') rgba(0, 0, 0, 0.3);
+:root {
+    --primary-color: #422208;
+    --secondary-color: #A47855;
+    --accent-color: #e0c8b4;
+    --text-color: #221104;
+    --background-color: #f7f4f1;
+    }
+
+body {
+    background: url('../images/classbg.jpg') rgba(0, 0, 0, 0);
     background-blend-mode: multiply;
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
+    font-family: 'Poppins', sans-serif;
 }
 
-@media (max-width: 991px) {
-    .sidebar{
-        background-color: rgba(255, 255, 255, 0.15);
-        backdrop-filter: blur(10px);
-    }
+.container-lg {
+    background-color: rgba(255, 255, 255, 0.4);
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 0px 0px rgba(0, 0, 0, 0.1);
+    width: fit-content;
+    justify-content: center;
+    color: #221104;
 }
+
+h2 {
+    margin-bottom: 2rem;
+    font-weight: 500;
+}
+
+button.btn-primary {
+    background-color: #d39f74;
+    border-color: #d39f74;
+    color:var(--text-color);
+    font-weight:  500;
+}
+
+button.btn-primary:hover {
+    background-color: #8a5021;
+    border-color: #8a5021;
+}
+
