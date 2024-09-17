@@ -5,6 +5,8 @@
     --accent-color: #e0c8b4;
     --text-color: #221104;
     --background-color: #f7f4f1;
+    --danger:#C85E60;
+    --primary:#5E83C8;
     }
 
 *{
@@ -13,6 +15,7 @@
 
     .wrapper {
         display: flex;
+        padding-top: 57px;
         width: 100%;
         height: 100vh;
     }
@@ -69,6 +72,11 @@
 
     .navbar {
         background-color: #A47855;
+        width: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1000;
     }
 
     .content h1 {
@@ -124,3 +132,58 @@
     }
 }
 
+.table-heading {
+    background-color: #343a40 !important;
+    color: white !important;
+    text-align: center;
+}
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #f2f2f2;
+}
+.table td, .table th {
+    vertical-align: middle;
+    text-align: center;
+}
+.btn-sm {
+    margin: 0 5px;
+}
+.table tbody tr:hover {
+    background-color: #145697;
+}
+
+/*? user-details-container */
+.details-container{
+    max-width: 1200px;
+}
+
+.user-details-card{
+    background-color: white;
+    padding: 12px;
+    margin: 12px 0px;
+    box-shadow: 1px 1px 8px #c8c7c7;
+    border-radius: 8px;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    -ms-border-radius: 8px;
+    -o-border-radius: 8px;
+}
+
+.paymentCard{
+    background-color: #b8d5c1;
+    box-shadow: 1px 1px 8px #0000002c;
+    border-radius: 8px;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    -ms-border-radius: 8px;
+    -o-border-radius: 8px;
+}
+
+.paymentCard.paid {
+    background-color: #d4edda; 
+    border-color: #c3e6cb;
+}
+
+.paymentCard.declined {
+    background-color: #f8d7da; 
+    border-color: #f5c6cb;
+}

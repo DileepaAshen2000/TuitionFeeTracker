@@ -46,6 +46,8 @@ if (addStudentForm) {
         const email = addStudentForm['student-email'].value;
         const name = addStudentForm['student-name'].value;
         const defaultPassword = "defaultPassword123"; // Default password for students
+        const registrationDate = new Date();
+
 
         auth.createUserWithEmailAndPassword(email, defaultPassword)
             .then(userCredential => {
@@ -54,7 +56,8 @@ if (addStudentForm) {
                 db.collection('students').doc(user.uid).set({
                     email: email,
                     name: name,
-                    paymentHistory: {}
+                    paymentHistory: {},
+                    registrationDate : registrationDate
                 }).then(() => {
                     console.log('Student added to Firestore');
                 });

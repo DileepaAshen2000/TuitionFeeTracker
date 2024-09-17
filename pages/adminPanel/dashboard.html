@@ -14,7 +14,8 @@
 <body>
 
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark">
+     <section class="navbar-section">
+        <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">Tuition Fee Tracker</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -24,7 +25,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Home</a>
+                        <a class="nav-link" href="/pages/home.html">Home</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Settings</a>
@@ -39,6 +40,8 @@
             </div>
         </div>
     </nav>
+     </section>
+    
 
     <div class="wrapper">
         <!-- Sidebar -->
@@ -66,7 +69,7 @@
         </div>
 
         <!-- Content -->
-        <div class="content" id="content-area">
+        <div class="content px-5" id="content-area">
             <h1>Welcome to the Admin Dashboard</h1>
             <p>Here you can manage users, view reports, and adjust settings.</p>
             <!-- Add your content here -->
@@ -138,6 +141,8 @@
                 const name = addStudentForm['student-name'].value;
                 const role = 'student';
                 const defaultPassword = "defaultPassword123"; // Default password for students
+                const registrationDate = new Date();
+
 
                 auth.createUserWithEmailAndPassword(email, defaultPassword)
                     .then(userCredential => {
@@ -147,7 +152,8 @@
                             email: email,
                             name: name,
                             role:role,
-                            paymentHistory: {}
+                            paymentHistory: {},
+                            registrationDate : registrationDate
                         }).then(() => {
                             console.log('Student added to Firestore');
                             Swal.fire({
@@ -167,12 +173,24 @@
         }
 
         function getAllStudents(){
+            const studentList = document.getElementById('student-list');
             const db = firebase.firestore();
 
             db.collection('students').where('role', '==', 'student').get().then((querySnapshot)=>{
                 querySnapshot.forEach((doc) =>{
                     const studentData = doc.data();
                     console.log(`ID: ${doc.id}, Name: ${studentData.name}, Email: ${studentData.email}`);
+
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${studentData.name}</td>
+                        <td>${studentData.email}</td>
+                        <td>
+                            <button class="btn btn-sm" style="background-color:#5E83C8" onclick="viewStudent('${doc.id}')">View</button>
+                            <button class="btn btn-sm" style="background-color:#C85E60">Delete</button>  
+                        </td>
+                    `;
+                    studentList.appendChild(row);
                     
                 });
             })
@@ -180,6 +198,10 @@
                 console.log("Error getting students",error);
             })
 
+        }
+
+        function viewStudent(id){
+            window.location.href = `/pages/adminPanel/viewStudent.html?id=${id}`
         }
 
     </script>
