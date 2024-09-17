@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Student</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="admin.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="admin.css">
+</head>
+
+<body>
+    <section class="navbar-section">
+        <nav class="navbar navbar-expand-lg navbar-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">Tuition Fee Tracker</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/pages/home.html">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Settings</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Profile</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Logout</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </section>
+
+
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <h4 class="mt-3"><i class="bi bi-menu-button-fill me-3"></i>Menu</h4>
+            <hr>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link" href="/pages/adminPanel/dashboard.html"><i
+                            class="bi bi-grid-fill me-3"></i>Dashboard</a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Content -->
+        <div class="content" id="content-area">
+            <h1>Student Analytics</h1>
+            <div class="row mt-5 details-container">
+                <div class="col-12 col-md-6">
+                    <h4>Student Details</h4>
+                    <div class="user-details-card  d-flex justify-content-start align-items-center" >
+                        <p class="col-4 d-felx justify-content-start align-items-center m-0"><b>Name </b></p>
+                        <p class="col-8 d-felx justify-content-start align-items-center m-0" id="name"></p>
+                    </div>
+                    <div class="user-details-card  d-flex justify-content-start align-items-center" >
+                        <p class="col-4 d-felx justify-content-start align-items-center m-0"><b>Email </b></p>
+                        <p class="col-4 d-felx justify-content-start align-items-center m-0" id="email"></p>
+                    </div>
+
+                    <!-- !payment table -->
+                    <table class="table table-striped mt-3" id="paymentTable">
+                        <thead>
+                            <tr>
+                                <th>Month</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Table rows will be generated here -->
+                        </tbody>
+                    </table>
+                    
+
+                </div>
+                <div class="col-12 col-md-6 ">
+                    <div class="container">
+                        <h4>Update Student Payment</h4>
+                        <form id="update-payment-form">
+        
+                            <div class="mb-3">
+                                <label for="payment-year" class="form-label">Payment Year</label>
+                                <input type="number" class="form-control" id="payment-year" placeholder="Enter Year" required>
+                            </div>
+        
+                            <div class="mb-3">
+                                <label for="payment-month" class="form-label">Payment Month</label>
+                                <select class="form-select" id="payment-month" required>
+                                    <option value="" disabled selected>Select Month</option>
+                                    <option value="January">January</option>
+                                    <option value="February">February</option>
+                                    <option value="March">March</option>
+                                    <option value="April">April</option>
+                                    <option value="May">May</option>
+                                    <option value="June">June</option>
+                                    <option value="July">July</option>
+                                    <option value="August">August</option>
+                                    <option value="September">September</option>
+                                    <option value="October">October</option>
+                                    <option value="November">November</option>
+                                    <option value="December">December</option>
+                                </select>
+                            </div>
+        
+                            <div class="mb-3">
+                                <label for="payment-date" class="form-label">Payment Date</label>
+                                <input type="date" class="form-control" id="payment-date" required>
+                            </div>
+                    
+                            <div class="mb-3">
+                                <label for="payment-status" class="form-label">Payment Status</label>
+                                <select class="form-select" id="payment-status" required>
+                                    <option value="" disabled selected>Select Status</option>
+                                    <option value="paid">Paid</option>
+                                    <option value="declined">Declined</option>
+                                </select>
+                            </div>
+                    
+                            <button type="submit" class="btn btn-success">Update Payment</button>
+                        </form>
+                    </div>
+                    <!-- !payment history -->
+                    <div class="paymentsHistory mt-5" id="paymentsHistory">
+                        <h4>Payment History</h4>
+                        <div id="paymentsHistoryDiv" class="paymentsHistoryDiv">
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.12.4/dist/sweetalert2.all.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.12.4/dist/sweetalert2.min.css" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBstrpCu_ThYMZbUFIdHLpAvYvwUV4pz7s",
+            authDomain: "tuitionfeetracker.firebaseapp.com",
+            projectId: "tuitionfeetracker",
+            storageBucket: "tuitionfeetracker.appspot.com",
+            messagingSenderId: "174468857983",
+            appId: "1:174468857983:web:a6effa686b43616044bf4a",
+            measurementId: "G-N4C5G6T72G"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const studentId = urlParams.get('id');
+
+        
+        
+
+        function getStudentDetails(studentId) {
+    const db = firebase.firestore();
+
+    db.collection('students').doc(studentId).get()
+        .then((doc) => {
+            if (doc.exists) {
+                const studentData = doc.data();
+                document.getElementById('name').innerHTML = `${studentData.name}`;
+                document.getElementById('email').innerHTML = `${studentData.email}`;
+
+                const payments = studentData.paymentHistory;
+                const registrationDate = studentData.registrationDate.toDate(); // Convert Firebase timestamp to JS Date
+                const currentDate = new Date(); // Current date
+
+                if (payments && Object.keys(payments).length > 0) {
+                    let paymentCardHtml = '';
+                    Object.keys(payments).forEach((monthKey) => {
+                        const paymentDetails = payments[monthKey];
+                        const statusClass = paymentDetails.status === 'declined' ? 'declined' : 'paid';
+
+                        paymentCardHtml += `
+                            <div class="paymentCard p-3 mb-3 ${statusClass}">
+                                <div class="month d-flex mb-3">
+                                    <p class="m-0"><b>Month : </b></p>
+                                    <p class="m-0 ms-2" id="month">${monthKey}</p>
+                                </div> 
+                                <div class="paymentDetails d-flex justify-content-between">
+                                    <div class="status d-flex">
+                                        <p class="m-0"><b>Status : </b></p>
+                                        <p class="m-0 ms-2" id="status">${paymentDetails.status === 'paid' ? 'Paid' : 'Declined'}</p>
+                                    </div>
+                                    <div class="paymentDate d-flex">
+                                        <p class="m-0"><b>Payment Date : </b></p>
+                                        <p class="m-0 ms-2" id="paymentDate">${paymentDetails.paymentDate}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+
+                    document.getElementById('paymentsHistoryDiv').innerHTML = paymentCardHtml;
+
+                } else {
+                    console.log('No payment history found for this student.');
+                    document.getElementById('paymentsHistoryDiv').innerHTML = `<p class='text-danger'>No payment history found for this student.</p>`;
+                }
+
+                function getMonthName(date) {
+                    return date.toLocaleString('default', { month: 'long' });
+                }
+
+                function getMonthsBetweenDates(startDate, endDate) {
+                    let months = [];
+                    let current = new Date(startDate);
+                    
+                    while (current <= endDate) {
+                        const month = current.toLocaleString('default', { month: 'long' }); // Get full month name
+                        const year = current.getFullYear();
+                        months.push(`${month}-${year}`); // Format as "Month-Year"
+                        current.setMonth(current.getMonth() + 1); // Move to next month
+                    }
+
+                    return months;
+                }
+
+                // Get all months from registration date to current date
+                const allMonths = getMonthsBetweenDates(registrationDate, currentDate);
+
+                // Generate table rows
+                let tableRowsHtml = '';
+                allMonths.forEach((monthKey) => {
+                    const paymentDetails = payments ? payments[monthKey] : null;
+                    let status;
+                    if (paymentDetails) {
+                        status = paymentDetails.status ;
+                    } else {
+                        status = 'Yet to Pay'; // No payment entry found
+                    }
+
+                    tableRowsHtml += `
+                        <tr>
+                            <td>${monthKey}</td>
+                            <td>${status}</td>
+                        </tr>
+                    `;
+                });
+
+                document.getElementById('paymentTable').querySelector('tbody').innerHTML = tableRowsHtml;
+
+            } else {
+                console.log('No such student found!');
+                alert('No student found with this ID!');
+            }
+        })
+        .catch((error) => {
+            console.error("Error getting student data: ", error);
+        });
+}
+
+
+        getStudentDetails(studentId);
+
+        document.getElementById('update-payment-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const db = firebase.firestore();
+            const paymentMonth = document.getElementById('payment-month').value;
+            const paymentYear = document.getElementById('payment-year').value;
+            const paymentDate = document.getElementById('payment-date').value;
+            const paymentStatus = document.getElementById('payment-status').value;
+
+            const paymentKey = `${paymentMonth}-${paymentYear}`;
+
+            // Object to update the payment history
+            const paymentHistoryUpdate = {
+                [`paymentHistory.${paymentKey}`]: {
+                    paymentDate: paymentDate,
+                    status: paymentStatus
+                }
+            };
+
+            // Update Firestore document
+            db.collection('students').doc(studentId).update(paymentHistoryUpdate)
+                .then(() => {
+                    // alert('Payment details updated successfully!');
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "success",
+                        title: "Your work has been saved",
+                        showConfirmButton: false,
+                        timer: 1500
+                        });
+                    document.getElementById('update-payment-form').reset();
+                })
+                .catch((error) => {
+                    console.error("Error updating payment details: ", error);
+                });
+        });
+    
+        
+
+        
+        
+    
+    </script>
+</body>
+
+</html>
