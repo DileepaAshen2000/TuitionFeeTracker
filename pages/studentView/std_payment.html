@@ -38,26 +38,25 @@
     </section>
 
     <div class="wrapper">
-        
-            <!-- Sidebar Content -->
-            <div class="sidebar">
-                <h4 class="mt-3"><i class="bi bi-menu-button-fill me-3"></i>Menu</h4>
-                <hr>
-                <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link" data-page="adminHome.html"><i class="bi bi-grid-fill me-3"></i>Dashboard</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" data-page="user.html"><i class="bi bi-clock-history me-3"></i>Payment History</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" data-page="reports.html"><i class="bi bi-journals me-3"></i>Activity</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" data-page="Setting.html"><i class="bi bi-bell-fill me-3"></i>Announcement</a>
-                    </li>
-                </ul>
-            </div>
+        <!-- Sidebar Content -->
+        <div class="sidebar">
+            <h4 class="mt-3"><i class="bi bi-menu-button-fill me-3"></i>Menu</h4>
+            <hr>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link" data-page="adminHome.html"><i class="bi bi-grid-fill me-3"></i>Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-page="user.html"><i class="bi bi-clock-history me-3"></i>Payment History</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-page="reports.html"><i class="bi bi-journals me-3"></i>Activity</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-page="Setting.html"><i class="bi bi-bell-fill me-3"></i>Announcement</a>
+                </li>
+            </ul>
+        </div>
 
         <div class="content" id="content-area">
             <h1>Payment History</h1>
@@ -73,7 +72,20 @@
                     <form id="search-payment-form">
                         <div class="mb-3">
                             <label for="search-month" class="form-label">Month</label>
-                            <input type="text" class="form-control" id="search-month" placeholder="e.g., January">
+                            <select class="form-select" id="search-month">
+                                <option value="January">January</option>
+                                <option value="February">February</option>
+                                <option value="March">March</option>
+                                <option value="April">April</option>
+                                <option value="May">May</option>
+                                <option value="June">June</option>
+                                <option value="July">July</option>
+                                <option value="August">August</option>
+                                <option value="September">September</option>
+                                <option value="October">October</option>
+                                <option value="November">November</option>
+                                <option value="December">December</option>
+                            </select>
                         </div>
                         <div class="mb-3">
                             <label for="search-year" class="form-label">Year</label>
@@ -94,6 +106,38 @@
                         </tbody>
                     </table>
                 </div>
+
+                <div class="col-12 col-md-6">
+                    <div class="container">
+                        <h4>Any Clarification?</h4>
+                        <form id="clarification-form">
+                            <div class="mb-3">
+                                <label for="clarification-month" class="form-label">Select Month</label>
+                                <select class="form-select" id="clarification-month">
+                                    <option value="January">January</option>
+                                    <option value="February">February</option>
+                                    <option value="March">March</option>
+                                    <option value="April">April</option>
+                                    <option value="May">May</option>
+                                    <option value="June">June</option>
+                                    <option value="July">July</option>
+                                    <option value="August">August</option>
+                                    <option value="September">September</option>
+                                    <option value="October">October</option>
+                                    <option value="November">November</option>
+                                    <option value="December">December</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="clarification-message" class="form-label">Message</label>
+                                <textarea class="form-control" id="clarification-message" rows="4" placeholder="Enter your message..."></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Send Message</button>
+                        </form>
+                    </div>
+                </div>
+                
+                
             </div>
         </div>
     </div>
@@ -103,6 +147,8 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css">
 
     <script>
         const firebaseConfig = {
@@ -130,7 +176,7 @@
                         document.getElementById('name').innerHTML = studentData.name;
                         document.getElementById('email').innerHTML = studentData.email;
 
-                        displayPaymentHistory(studentData.paymentHistory);
+                        displayPaymentHistory(studentData.paymentHistory, studentData.registrationDate);
                     } else {
                         alert('No student found with this ID!');
                     }
@@ -140,31 +186,87 @@
                 });
         }
 
-        function displayPaymentHistory(paymentHistory) {
+        function displayPaymentHistory(paymentHistory, registrationDate) {
             const tableBody = document.getElementById('paymentTable').querySelector('tbody');
             tableBody.innerHTML = '';
-            if (paymentHistory) {
-                Object.keys(paymentHistory).forEach((monthKey) => {
-                    const paymentDetails = paymentHistory[monthKey];
-                    tableBody.innerHTML += `
-                        <tr>
-                            <td>${monthKey}</td>
-                            <td>${paymentDetails.status}</td>
-                        </tr>
-                    `;
-                });
-            } else {
-                tableBody.innerHTML = '<tr><td colspan="2">No payment history found.</td></tr>';
-            } 
+
+            const regDate = new Date(registrationDate.seconds * 1000); // Convert Firestore timestamp to JS Date
+            const currentDate = new Date();
+            const months = [];
+
+            // Generate all months from registration date up to the current month
+            let tempDate = new Date(regDate.getFullYear(), regDate.getMonth());
+            while (tempDate <= currentDate) {
+                months.push(new Date(tempDate));
+                tempDate.setMonth(tempDate.getMonth() + 1); // Increment to the next month
+            }
+
+            // Populate table with payment history or 'Yet to Pay'
+            months.forEach((date) => {
+                const month = date.toLocaleString('default', { month: 'long' });
+                const year = date.getFullYear();
+                const paymentKey = `${month}-${year}`;
+                
+                const paymentDetails = paymentHistory ? paymentHistory[paymentKey] : null;
+                const paymentStatus = paymentDetails ? paymentDetails.status : "Yet to Pay";
+
+                tableBody.innerHTML += `
+                    <tr>
+                        <td>${month} ${year}</td>
+                        <td>${paymentStatus}</td>
+                    </tr>
+                `;
+            });
         }
 
+        // Handle message form submission
+document.getElementById('clarification-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    const selectedMonth = document.getElementById('clarification-month').value;
+    const messageBody = document.getElementById('clarification-message').value.trim();
+
+    if (!messageBody) {
+        alert("Please enter a message.");
+        return;
+    }
+
+    // Create message data without the timestamp
+    const messageData = {
+        month: selectedMonth,
+        message: messageBody,
+        studentName: document.getElementById('name').innerHTML // Get the student name from the fetched details
+    };
+
+    // Add the message without the timestamp to the 'messages' array
+    db.collection('students').doc(studentId).update({
+        "messages.body": firebase.firestore.FieldValue.arrayUnion(messageData) // Append the new message to the messages array
+    })
+    .then(() => {
+        // Once the message is added, update it with the timestamp
+        db.collection('students').doc(studentId).update({
+            "messages.timestamp": firebase.firestore.FieldValue.serverTimestamp()
+        }).then(() => {
+            alert("Message sent successfully with timestamp!");
+            document.getElementById('clarification-form').reset(); // Clear the form after submission
+        }).catch((error) => {
+            console.error("Error updating message with timestamp: ", error);
+        });
+    })
+    .catch((error) => {
+        console.error("Error sending message: ", error);
+    });
+});
+
+
+
+        // Search payment details based on the provided month and year
         document.getElementById('search-payment-form').addEventListener('submit', function(e) {
             e.preventDefault();
 
             const searchMonth = document.getElementById('search-month').value.trim();
             const searchYear = document.getElementById('search-year').value.trim();
             const paymentKey = `${searchMonth}-${searchYear}`;
-            
 
             db.collection('students').doc(studentId).get()
                 .then((doc) => {
@@ -172,22 +274,21 @@
                         const studentData = doc.data();
                         const paymentHistory = studentData.paymentHistory || {};
                         const paymentDetails = paymentHistory[paymentKey];
-                        console.log("Payment details: ", paymentDetails);
-
+                        
                         const tableBody = document.getElementById('paymentTable').querySelector('tbody');
-                        tableBody.innerHTML = ''; // Clear previous search results
+                        tableBody.innerHTML = '';
 
                         if (paymentDetails) {
-                            tableBody.innerHTML = `
+                            tableBody.innerHTML += `
                                 <tr>
-                                    <td>${paymentKey}</td>
+                                    <td>${searchMonth} ${searchYear}</td>
                                     <td>${paymentDetails.status}</td>
                                 </tr>
                             `;
                         } else {
-                            tableBody.innerHTML = `
+                            tableBody.innerHTML += `
                                 <tr>
-                                    <td>${paymentKey}</td>
+                                    <td>${searchMonth} ${searchYear}</td>
                                     <td>Yet to Pay</td>
                                 </tr>
                             `;
@@ -197,11 +298,10 @@
                     }
                 })
                 .catch((error) => {
-                    console.error("Error fetching payment data: ", error);
+                    console.error("Error getting payment data: ", error);
                 });
         });
 
-        // Fetch and display all payment details for the specific student ID on page load
         getStudentDetails(studentId);
     </script>
 </body>
