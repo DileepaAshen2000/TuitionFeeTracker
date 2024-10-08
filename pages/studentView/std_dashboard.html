@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/pages/adminPanel/admin.css">
+</head>
+
+<body>
+
+    <!-- Navbar -->
+     <section class="navbar-section">
+        <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Tuition Fee Tracker</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/pages/home.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Settings</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+     </section>
+    
+
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <h4 class="mt-3"><i class="bi bi-menu-button-fill me-3"></i>Menu</h4>
+            <hr>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link" data-page="adminHome.html"><i class="bi bi-grid-fill me-3"></i>Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-page="user.html"><i class="bi bi-clock-history me-3"></i>Payment History</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-page="reports.html"><i class="bi bi-journals me-3"></i>Activity</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-page="Setting.html"><i class="bi bi-bell-fill me-3"></i>Announcement</a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Content -->
+        <div class="content px-5" id="content-area">
+            <h1>Welcome to the Student Dashboard</h1>
+            <p>Here you can manage users, view reports, and adjust settings.</p>
+            <!-- Add your content here -->
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.12.4/dist/sweetalert2.all.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.12.4/dist/sweetalert2.min.css" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const links = document.querySelectorAll('.nav-link');
+            const contentArea = document.getElementById('content-area');
+
+            links.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const page = this.getAttribute('data-page');
+
+                    fetch(page)
+                        .then(response => response.text())
+                        .then(data => {
+                            contentArea.innerHTML = data;
+                            if(page == 'user.html'){
+                                getAllStudents();
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error loading the page:', error);
+                            contentArea.innerHTML = '<p>Error loading content.</p>';
+                        });
+                });
+            });
+        });
+
+    </script>
+
+    <!-- ? add new student -->
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBstrpCu_ThYMZbUFIdHLpAvYvwUV4pz7s",
+            authDomain: "tuitionfeetracker.firebaseapp.com",
+            projectId: "tuitionfeetracker",
+            storageBucket: "tuitionfeetracker.appspot.com",
+            messagingSenderId: "174468857983",
+            appId: "1:174468857983:web:a6effa686b43616044bf4a",
+            measurementId: "G-N4C5G6T72G"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        function addStudent() {
+            document.getElementById('error-text').innerHTML =' ';
+            const addStudentForm = document.getElementById('add-student-form');
+            addStudentForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const email = addStudentForm['student-email'].value;
+                const name = addStudentForm['student-name'].value;
+                const role = 'student';
+                const defaultPassword = "defaultPassword123"; // Default password for students
+                const registrationDate = new Date();
+
+
+                auth.createUserWithEmailAndPassword(email, defaultPassword)
+                    .then(userCredential => {
+                        const user = userCredential.user;
+                        // Add student details to Firestore
+                        db.collection('students').doc(user.uid).set({
+                            email: email,
+                            name: name,
+                            role:role,
+                            paymentHistory: {},
+                            registrationDate : registrationDate
+                        }).then(() => {
+                            console.log('Student added to Firestore');
+                            Swal.fire({
+                                icon: "success",
+                                title: "Success",
+                                text: "Student added successfully.",
+                            });
+                            addStudentForm.reset();
+
+                        });
+                    })
+                    .catch(error => {
+                        document.getElementById('error-text').innerHTML = error;
+                        console.error('Error adding student:', error);
+                    });
+            });
+        }
+
+        function getAllStudents(){
+            const studentList = document.getElementById('student-list');
+            const db = firebase.firestore();
+
+            db.collection('students').where('role', '==', 'student').get().then((querySnapshot)=>{
+                querySnapshot.forEach((doc) =>{
+                    const studentData = doc.data();
+                    console.log(`ID: ${doc.id}, Name: ${studentData.name}, Email: ${studentData.email}`);
+
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${studentData.name}</td>
+                        <td>${studentData.email}</td>
+                        <td>
+                            <button class="btn btn-sm" style="background-color:#5E83C8" onclick="viewStudent('${doc.id}')">View</button>
+                            <button class="btn btn-sm" style="background-color:#C85E60">Delete</button>  
+                        </td>
+                    `;
+                    studentList.appendChild(row);
+                    
+                });
+            })
+            .catch((error)=>{
+                console.log("Error getting students",error);
+            })
+
+        }
+
+        function viewStudent(id){
+            window.location.href = `/pages/adminPanel/viewStudent.html?id=${id}`
+        }
+
+    </script>
+
+</body>
+
+</html>
